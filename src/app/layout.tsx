@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { CartLink } from "@/components/cart-link";
+import { CartProvider } from "@/components/cart-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -34,7 +36,7 @@ function Nav() {
               {link.label}
             </Link>
           ))}
-          {/* cart-link */}
+          <CartLink />
         </div>
       </nav>
     </header>
@@ -60,9 +62,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className="min-h-screen bg-black text-zinc-100 antialiased">
-        <Nav />
-        {children}
-        <Footer />
+        <CartProvider>
+          <Nav />
+          {children}
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );
