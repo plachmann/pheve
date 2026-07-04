@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { MailingListForm } from "@/components/mailing-list-form";
 import { loadEvents, upcomingEvents } from "@/lib/content";
 
 export const revalidate = 3600;
@@ -61,7 +62,7 @@ export default function HomePage() {
         </a>
       </section>
 
-      {/* mailing-list */}
+      <MailingListForm />
     </main>
   );
 }
