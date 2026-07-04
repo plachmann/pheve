@@ -1,0 +1,18 @@
+repos:
+  - repo: local
+    hooks:
+      - id: oxlint
+        name: oxlint
+        entry: pnpm exec oxlint
+        language: system
+        pass_filenames: false
+      - id: oxfmt
+        name: oxfmt --check
+        entry: pnpm exec oxfmt --check . '!docs/**'
+        language: system
+        pass_filenames: false
+      - id: typecheck
+        name: tsc --noEmit
+        entry: pnpm exec tsc --noEmit
+        language: system
+        pass_filenames: false
