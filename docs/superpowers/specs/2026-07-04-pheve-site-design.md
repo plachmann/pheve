@@ -41,8 +41,11 @@ small set of route handlers plus one Postgres database.
 
 | Route | Content | Rendering |
 |---|---|---|
-| `/` | Hero with logo, next upcoming show, social/Venmo links, mailing list signup | Static |
-| `/shows` | Upcoming events; past shows auto-hidden by date | Static |
+| `/` | Hero with logo, next upcoming show, social/Venmo links, mailing list signup | Static, ISR (hourly) |
+| `/shows` | Upcoming events; past shows auto-hidden by date | Static, ISR (hourly) |
+
+Date-dependent pages use ISR (hourly revalidation) so a show that has passed
+disappears without waiting for the next deploy.
 | `/store` | Product grid with sold-out badges | Dynamic read (stock) |
 | `/store/[slug]` | Product detail: photos, variants, add to cart | Dynamic read (stock) |
 | `/gallery` | Photo grid (repo images via `next/image`), embedded YouTube/Instagram videos | Static |
@@ -99,8 +102,9 @@ Single vendor: Resend, sending from pheve.com after DNS (SPF/DKIM) verification.
 
 - **Booking:** `POST /api/booking` — Zod-validated fields (name, email, date,
   event type, message) → email to the band → on-page confirmation.
-  Spam control: honeypot field + per-IP rate limit. No CAPTCHA unless spam
-  becomes a real problem.
+  Spam control: honeypot field + per-IP rate limit backed by the existing
+  Postgres database (serverless functions can't keep in-memory counters).
+  No CAPTCHA unless spam becomes a real problem.
 - **Mailing list:** `POST /api/subscribe` adds the address to a Resend
   Audience. Announcements are sent as Resend Broadcasts from the Resend
   dashboard, which handles unsubscribe links (CAN-SPAM).
