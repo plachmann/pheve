@@ -18,19 +18,26 @@
     "restock": "tsx --env-file=.env.local scripts/restock.ts"
   },
   "dependencies": {
+    "drizzle-orm": "0.45.2",
     "next": "16.2.10",
+    "pg": "8.22.0",
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "zod": "4.4.3"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.4",
     "@tailwindcss/postcss": "4.3.2",
     "@types/node": "26.1.0",
+    "@types/pg": "8.20.0",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
+    "dotenv": "17.4.2",
+    "drizzle-kit": "0.31.10",
     "oxfmt": "0.57.0",
     "oxlint": "1.72.0",
     "tailwindcss": "4.3.2",
+    "tsx": "4.23.0",
     "typescript": "6.0.3",
     "vitest": "4.1.9"
   },
