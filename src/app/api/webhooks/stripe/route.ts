@@ -2,17 +2,21 @@ import type Stripe from "stripe";
 import { getDb } from "@/lib/db/client";
 import { sendOrderEmail } from "@/lib/email";
 import { getStripe } from "@/lib/stripe";
-import { processCheckoutCompleted } from "@/lib/webhook";
+import { processCheckoutCompleted, UnprocessableWebhookError } from "@/lib/webhook";
 
 export async function POST(request: Request): Promise<Response> {
   const payload = await request.text();
   const signature = request.headers.get("stripe-signature");
   if (!signature) return new Response("Missing stripe-signature header", { status: 400 });
 
+  const secret = process.env["STRIPE_WEBHOOK_SECRET"];
+  if (!secret) {
+    console.error("STRIPE_WEBHOOK_SECRET is not set — cannot verify webhook signatures");
+    return new Response("Webhook not configured", { status: 500 });
+  }
+
   let event: Stripe.Event;
   try {
-    const secret = process.env["STRIPE_WEBHOOK_SECRET"];
-    if (!secret) throw new Error("STRIPE_WEBHOOK_SECRET is not set");
     event = getStripe().webhooks.constructEvent(payload, signature, secret);
   } catch (err) {
     console.error("webhook signature verification failed", err);
@@ -38,6 +42,10 @@ export async function POST(request: Request): Promise<Response> {
         }
       }
     } catch (err) {
+      if (err instanceof UnprocessableWebhookError) {
+        console.error(`ignoring unprocessable webhook event ${session.id}`, err);
+        return new Response("ok");
+      }
       console.error(`webhook processing failed for ${session.id}`, err);
       return new Response("Processing failed", { status: 500 });
     }
