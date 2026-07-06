@@ -18,6 +18,7 @@
 - `docker compose up -d --wait` requires Compose v2.17+ (installed: v5.3.0 — satisfied).
 - `--env-file-if-exists` requires Node 22.9+ (project targets Node 22 LTS — satisfied).
 - `.env.development.local` must never be committed — it's already covered by the `.env*.local` line in `.gitignore`; verify this before moving on.
+- **Amendment (post Task 1):** the volume mount is `pheve_pgdata:/var/lib/postgresql`, not `/var/lib/postgresql/data`. Postgres 18's official image changed its `PGDATA`/`VOLUME` convention (docker-library/postgres#1259) — mounting at the old `/var/lib/postgresql/data` path now fails to start ("no such file or directory"). `/var/lib/postgresql` is upstream's documented fix for fresh deployments.
 
 ---
 
@@ -50,7 +51,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - pheve_pgdata:/var/lib/postgresql/data
+      - pheve_pgdata:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U pheve -d pheve_dev"]
       interval: 2s
