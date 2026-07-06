@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: pheve
+      POSTGRES_PASSWORD: pheve
+      POSTGRES_DB: pheve_dev
+    ports:
+      - "5433:5432"
+    volumes:
+      - pheve_pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pheve -d pheve_dev"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+
+volumes:
+  pheve_pgdata:
