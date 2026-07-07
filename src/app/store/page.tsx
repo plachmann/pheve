@@ -30,7 +30,11 @@ export default async function StorePage() {
           The store is napping — browsing only for now. Check back soon.
         </p>
       ) : null}
-      <ul className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 2xl:grid-cols-5">
+      <ul
+        className={
+          "mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 2xl:grid-cols-5"
+        }
+      >
         {products.map((product) => {
           const variants = stock?.[product.slug] ?? {};
           const soldOut = stock !== null && product.variants.every((v) => (variants[v] ?? 0) === 0);
@@ -38,7 +42,10 @@ export default async function StorePage() {
             <li key={product.slug}>
               <Link
                 href={`/store/${product.slug}`}
-                className="relative block border border-zinc-800 bg-[#111] p-4 transition-colors hover:border-pheve-red"
+                className={
+                  "relative block border border-zinc-800 bg-[#111] p-4 " +
+                  "transition-colors hover:border-pheve-red"
+                }
               >
                 <div className="relative h-40 w-full">
                   <Image

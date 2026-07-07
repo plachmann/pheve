@@ -13,8 +13,8 @@ export default function BookingPage() {
             Book the band
           </h1>
           <p className="mt-6 max-w-xl text-lg text-zinc-400">
-            Weddings, bars, festivals, backyard blowouts — if it has power outlets, we’ll play it.
-            Tell us what you’re planning.
+            {"Weddings, bars, festivals, backyard blowouts — if it has power outlets, we’ll " +
+              "play it. Tell us what you’re planning."}
           </p>
         </section>
         <div className="max-w-xl">

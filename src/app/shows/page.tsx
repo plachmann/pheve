@@ -7,7 +7,9 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = { title: "Shows — PHEVE" };
 
-const VENUE_LINK_ACCENT = "text-pheve-red hover:text-white";
+const VENUE_LINK_CLASS =
+  "mt-3 inline-block text-sm font-bold uppercase tracking-wider " +
+  "text-pheve-red hover:text-white";
 
 function EventCard({ event }: { event: BandEvent }) {
   return (
@@ -18,10 +20,7 @@ function EventCard({ event }: { event: BandEvent }) {
         {event.city} · {event.time}
       </p>
       {event.link ? (
-        <a
-          href={event.link}
-          className={`mt-3 inline-block text-sm font-bold uppercase tracking-wider ${VENUE_LINK_ACCENT}`}
-        >
+        <a href={event.link} className={VENUE_LINK_CLASS}>
           Venue info →
         </a>
       ) : null}

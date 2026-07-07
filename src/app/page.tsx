@@ -6,6 +6,10 @@ import { formatEventDate } from "@/lib/dates";
 
 export const revalidate = 3600;
 
+const STAT_LINK =
+  "mt-3 inline-block text-sm font-bold uppercase tracking-wider " +
+  "text-pheve-red hover:text-white";
+
 export default function HomePage() {
   const nextShow = upcomingEvents(loadEvents(), new Date())[0];
 
@@ -25,7 +29,11 @@ export default function HomePage() {
           </div>
           <div>
             <p className="eyebrow">Live cover band</p>
-            <h1 className="headline-skew mt-3 font-display text-6xl uppercase leading-none md:text-8xl">
+            <h1
+              className={
+                "headline-skew mt-3 font-display text-6xl uppercase leading-none md:text-8xl"
+              }
+            >
               The songs you know, played loud.
             </h1>
             <div className="mt-8 flex flex-wrap gap-4">
@@ -50,10 +58,7 @@ export default function HomePage() {
                 <p className="mt-1 text-zinc-400">
                   {nextShow.city} · {formatEventDate(nextShow.date)} · {nextShow.time}
                 </p>
-                <Link
-                  href="/shows"
-                  className="mt-3 inline-block text-sm font-bold uppercase tracking-wider text-pheve-red hover:text-white"
-                >
+                <Link href="/shows" className={STAT_LINK}>
                   All shows →
                 </Link>
               </>
@@ -66,10 +71,7 @@ export default function HomePage() {
           <div className="px-6 py-8 md:px-12">
             <p className="eyebrow">Latest merch</p>
             <p className="mt-2 font-display text-3xl uppercase">Tees, hats &amp; stickers</p>
-            <Link
-              href="/store"
-              className="mt-3 inline-block text-sm font-bold uppercase tracking-wider text-pheve-red hover:text-white"
-            >
+            <Link href="/store" className={STAT_LINK}>
               Hit the store →
             </Link>
           </div>

@@ -57,7 +57,10 @@ export function CartView({ products }: { products: Product[] }) {
           return (
             <li
               key={`${line.slug}-${line.variant}`}
-              className="flex flex-wrap items-center justify-between gap-4 border border-zinc-800 bg-[#111] p-4"
+              className={
+                "flex flex-wrap items-center justify-between gap-4 border " +
+                "border-zinc-800 bg-[#111] p-4"
+              }
             >
               <div>
                 <p className="font-semibold">{product.name}</p>
