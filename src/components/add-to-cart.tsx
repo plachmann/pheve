@@ -6,7 +6,8 @@ import type { Product } from "@/lib/content";
 
 export function AddToCart({ product, stock }: { product: Product; stock: Record<string, number> }) {
   const { add } = useCart();
-  const [variant, setVariant] = useState(product.variants[0] ?? "");
+  const firstAvailable = product.variants.find((v) => (stock[v] ?? 0) > 0);
+  const [variant, setVariant] = useState(firstAvailable ?? product.variants[0] ?? "");
   const [added, setAdded] = useState(false);
 
   const available = (stock[variant] ?? 0) > 0;
