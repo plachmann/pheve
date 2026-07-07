@@ -8,7 +8,9 @@ test.describe("merch purchase", () => {
   test("browse → cart → Stripe Checkout → success", async ({ page }) => {
     await page.goto("/store");
     await page.getByRole("link", { name: /PHEVE Logo Tee/i }).click();
-    await page.getByLabel(/size/i).selectOption("L");
+    // Playwright's getByRole name matching is substring-based by default, so "L" alone
+    // would also match "XL" and "2XL" — exact: true pins it to the single "L" swatch.
+    await page.getByRole("radio", { name: "L", exact: true }).click();
     await page.getByRole("button", { name: /add to cart/i }).click();
 
     await page.goto("/cart");
