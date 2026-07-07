@@ -15,7 +15,9 @@ test.describe("booking inquiry", () => {
     await page.getByRole("button", { name: /send inquiry/i }).click();
     await expect(page.getByText(/we’ll get back to you/i)).toBeVisible();
   });
+});
 
+test.describe("booking form validation", () => {
   test("shows a validation error for a bad email", async ({ page }) => {
     await page.goto("/booking");
     await page.getByLabel(/email/i).fill("not-an-email");
