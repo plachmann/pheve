@@ -17,11 +17,15 @@ export function MobileNav({ links }: { links: { href: string; label: string }[] 
         onClick={() => setOpen(!open)}
       >
         <span
-          className={`h-0.5 w-6 bg-white transition-transform ${open ? "translate-y-2 rotate-45" : ""}`}
+          className={`h-0.5 w-6 bg-white transition-transform ${
+            open ? "translate-y-2 rotate-45" : ""
+          }`}
         />
         <span className={`h-0.5 w-6 bg-white ${open ? "opacity-0" : ""}`} />
         <span
-          className={`h-0.5 w-6 bg-white transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`}
+          className={`h-0.5 w-6 bg-white transition-transform ${
+            open ? "-translate-y-2 -rotate-45" : ""
+          }`}
         />
       </button>
       {open ? (

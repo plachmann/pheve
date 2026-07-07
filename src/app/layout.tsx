@@ -31,6 +31,8 @@ const SOCIAL_LINKS = [
   { href: "https://venmo.com/pheve", label: "Venmo Tips" },
 ];
 
+const NAV_LINK_ROW_CLASS = "text-sm font-bold uppercase tracking-wider";
+
 function Nav() {
   return (
     <header className="relative border-b-2 border-pheve-red bg-black">
@@ -38,7 +40,7 @@ function Nav() {
         <Link href="/" className="font-display text-2xl uppercase tracking-widest">
           PHEVE
         </Link>
-        <div className="hidden items-center gap-6 text-sm font-bold uppercase tracking-wider text-zinc-300 md:flex">
+        <div className={`hidden items-center gap-6 ${NAV_LINK_ROW_CLASS} text-zinc-300 md:flex`}>
           {NAV_LINKS.map((link) => (
             <Link key={link.href} href={link.href} className="hover:text-pheve-red">
               {link.label}
@@ -46,7 +48,7 @@ function Nav() {
           ))}
           <CartLink />
         </div>
-        <div className="flex items-center gap-4 text-sm font-bold uppercase tracking-wider md:hidden">
+        <div className={`flex items-center gap-4 ${NAV_LINK_ROW_CLASS} md:hidden`}>
           <CartLink />
           <MobileNav links={NAV_LINKS} />
         </div>
