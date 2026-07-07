@@ -15,7 +15,12 @@
     "e2e": "playwright test",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "restock": "tsx --env-file=.env.local scripts/restock.ts"
+    "docker:up": "docker compose up -d --wait",
+    "docker:down": "docker compose down",
+    "docker:reset": "docker compose down -v",
+    "restock": "tsx --env-file=.env.local --env-file-if-exists=.env.development.local scripts/restock.ts",
+    "db:seed": "tsx --env-file=.env.local --env-file-if-exists=.env.development.local scripts/seed.ts",
+    "db:setup": "pnpm docker:up && pnpm db:migrate && pnpm db:seed"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",
