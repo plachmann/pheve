@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
+import { Anton } from "next/font/google";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { CartLink } from "@/components/cart-link";
 import { CartProvider } from "@/components/cart-provider";
 import "./globals.css";
+
+const anton = Anton({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-anton",
+});
 
 export const metadata: Metadata = {
   title: "PHEVE — Live Cover Band",
@@ -60,7 +67,7 @@ function Footer() {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={anton.variable}>
       <body className="min-h-screen bg-black text-zinc-100 antialiased">
         <CartProvider>
           <Nav />
