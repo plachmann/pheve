@@ -2,8 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 
-const inputClass =
-  "mt-1 w-full rounded border border-zinc-700 bg-zinc-900 px-3 py-2 focus:border-zinc-500 focus:outline-none";
+const inputClass = "input-field mt-1";
 
 export function BookingForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -35,14 +34,14 @@ export function BookingForm() {
 
   if (status === "sent") {
     return (
-      <p className="mt-8 rounded-lg border border-green-900 bg-green-950/40 p-6 text-green-200">
+      <p className="mt-8 border border-green-900 bg-green-950/40 p-6 text-green-200">
         Got it — we’ll get back to you within a couple of days. 🤘
       </p>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 lg:mt-2">
       <label className="block">
         <span className="text-sm uppercase tracking-widest text-zinc-500">Your name</span>
         <input name="name" required maxLength={200} className={inputClass} />
@@ -85,11 +84,7 @@ export function BookingForm() {
         aria-hidden="true"
         className="hidden"
       />
-      <button
-        type="submit"
-        disabled={status === "sending"}
-        className="rounded-lg bg-white px-6 py-3 font-bold text-black hover:bg-zinc-200 disabled:opacity-50"
-      >
+      <button type="submit" disabled={status === "sending"} className="btn-primary">
         {status === "sending" ? "Sending…" : "Send inquiry"}
       </button>
       {status === "error" ? <p className="text-red-400">{errorMessage}</p> : null}

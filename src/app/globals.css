@@ -1,1 +1,121 @@
 @import "tailwindcss";
+
+@theme {
+  --color-pheve-red: #e0111a;
+  --color-pheve-red-dark: #b30d15;
+  --font-display: var(--font-anton);
+}
+
+@layer components {
+  /* Content shell: wide inner container. Full-bleed chrome sits OUTSIDE this. */
+  .shell {
+    width: 100%;
+    max-width: 90rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .shell {
+      padding-inline: 3rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .shell {
+      padding-inline: 4rem;
+    }
+  }
+
+  /* Small uppercase red section label */
+  .eyebrow {
+    color: var(--color-pheve-red);
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+  }
+
+  /* Signature headline skew — desktop only so narrow type doesn't clip */
+  .headline-skew {
+    display: inline-block;
+  }
+  @media (min-width: 768px) {
+    .headline-skew {
+      transform: skewX(-4deg);
+    }
+  }
+
+  /* Low-opacity diagonal stripes behind dark hero sections */
+  .stripe-texture {
+    position: relative;
+    isolation: isolate;
+  }
+  .stripe-texture::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      -45deg,
+      rgb(255 255 255 / 0.04) 0,
+      rgb(255 255 255 / 0.04) 1px,
+      transparent 1px,
+      transparent 12px
+    );
+  }
+
+  /* Angled photo panel: slanted left edge on desktop, shallow bottom cut on mobile */
+  .clip-angled {
+    clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
+  }
+  @media (min-width: 768px) {
+    .clip-angled {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 6% 100%);
+    }
+  }
+
+  .btn-primary {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-pheve-red);
+    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    transition: background-color 150ms;
+  }
+  .btn-primary:hover {
+    background-color: var(--color-pheve-red-dark);
+  }
+  .btn-primary:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  .btn-ghost {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid var(--color-pheve-red);
+    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    transition: background-color 150ms;
+  }
+  .btn-ghost:hover {
+    background-color: var(--color-pheve-red);
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #3f3f46; /* zinc-700 */
+    background-color: #111;
+  }
+  .input-field:focus {
+    border-color: var(--color-pheve-red);
+    outline: none;
+  }
+}
