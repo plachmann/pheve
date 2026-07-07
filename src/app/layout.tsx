@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { CartLink } from "@/components/cart-link";
 import { CartProvider } from "@/components/cart-provider";
+import { MobileNav } from "@/components/mobile-nav";
 import "./globals.css";
 
 const anton = Anton({
@@ -32,18 +33,22 @@ const SOCIAL_LINKS = [
 
 function Nav() {
   return (
-    <header className="border-b border-zinc-800">
-      <nav className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-4">
-        <Link href="/" className="text-xl font-black tracking-widest">
+    <header className="relative border-b-2 border-pheve-red bg-black">
+      <nav className="shell flex items-center justify-between py-4">
+        <Link href="/" className="font-display text-2xl uppercase tracking-widest">
           PHEVE
         </Link>
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-zinc-300">
+        <div className="hidden items-center gap-6 text-sm font-bold uppercase tracking-wider text-zinc-300 md:flex">
           {NAV_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-white">
+            <Link key={link.href} href={link.href} className="hover:text-pheve-red">
               {link.label}
             </Link>
           ))}
           <CartLink />
+        </div>
+        <div className="flex items-center gap-4 text-sm font-bold uppercase tracking-wider md:hidden">
+          <CartLink />
+          <MobileNav links={NAV_LINKS} />
         </div>
       </nav>
     </header>
@@ -52,15 +57,21 @@ function Nav() {
 
 function Footer() {
   return (
-    <footer className="mt-16 border-t border-zinc-800 py-8 text-center text-sm text-zinc-500">
-      <div className="flex justify-center gap-6 pb-4">
-        {SOCIAL_LINKS.map((link) => (
-          <a key={link.href} href={link.href} className="hover:text-zinc-300">
-            {link.label}
-          </a>
-        ))}
+    <footer className="mt-24 border-t-2 border-pheve-red bg-black py-12 text-sm text-zinc-500">
+      <div className="shell flex flex-col items-center gap-6">
+        <div className="flex flex-wrap justify-center gap-8">
+          {SOCIAL_LINKS.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="font-bold uppercase tracking-wider hover:text-pheve-red"
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+        <p>© {new Date().getFullYear()} PHEVE</p>
       </div>
-      <p>© {new Date().getFullYear()} PHEVE</p>
     </footer>
   );
 }
