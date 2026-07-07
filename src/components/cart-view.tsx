@@ -49,7 +49,7 @@ export function CartView({ products }: { products: Product[] }) {
   }
 
   return (
-    <div className="mt-8">
+    <div className="mt-10 grid items-start gap-10 lg:grid-cols-[1fr_24rem]">
       <ul className="space-y-4">
         {validItems.map((line) => {
           const product = products.find((p) => p.slug === line.slug);
@@ -57,7 +57,7 @@ export function CartView({ products }: { products: Product[] }) {
           return (
             <li
               key={`${line.slug}-${line.variant}`}
-              className="flex items-center justify-between gap-4 rounded-lg border border-zinc-800 p-4"
+              className="flex flex-wrap items-center justify-between gap-4 border border-zinc-800 bg-[#111] p-4"
             >
               <div>
                 <p className="font-semibold">{product.name}</p>
@@ -69,7 +69,7 @@ export function CartView({ products }: { products: Product[] }) {
                 <button
                   type="button"
                   aria-label="Decrease quantity"
-                  className="h-8 w-8 rounded border border-zinc-700 hover:bg-zinc-800"
+                  className="h-11 w-11 border border-zinc-700 hover:bg-zinc-800"
                   onClick={() => setQty(line.slug, line.variant, line.quantity - 1)}
                 >
                   −
@@ -78,7 +78,7 @@ export function CartView({ products }: { products: Product[] }) {
                 <button
                   type="button"
                   aria-label="Increase quantity"
-                  className="h-8 w-8 rounded border border-zinc-700 hover:bg-zinc-800"
+                  className="h-11 w-11 border border-zinc-700 hover:bg-zinc-800"
                   onClick={() => setQty(line.slug, line.variant, line.quantity + 1)}
                 >
                   +
@@ -96,22 +96,23 @@ export function CartView({ products }: { products: Product[] }) {
         })}
       </ul>
 
-      <div className="mt-6 flex items-center justify-between">
-        <p className="text-lg">
-          Subtotal:{" "}
-          <span className="font-bold">{formatCents(cartSubtotalCents(validItems, products))}</span>
-        </p>
+      <aside className="border border-zinc-800 bg-[#111] p-6 lg:sticky lg:top-8">
+        <h2 className="font-display text-2xl uppercase">Order summary</h2>
+        <dl className="mt-4 flex items-center justify-between text-lg">
+          <dt className="text-zinc-400">Subtotal</dt>
+          <dd className="font-bold">{formatCents(cartSubtotalCents(validItems, products))}</dd>
+        </dl>
+        <p className="mt-2 text-sm text-zinc-500">Flat-rate US shipping added at checkout.</p>
         <button
           type="button"
           disabled={busy}
           onClick={checkout}
-          className="rounded-lg bg-white px-6 py-3 font-bold text-black hover:bg-zinc-200 disabled:opacity-50"
+          className="btn-primary mt-6 w-full"
         >
           {busy ? "Heading to checkout…" : "Checkout"}
         </button>
-      </div>
-      <p className="mt-2 text-sm text-zinc-500">Flat-rate US shipping added at checkout.</p>
-      {error ? <p className="mt-4 text-red-400">{error}</p> : null}
+        {error ? <p className="mt-4 text-red-400">{error}</p> : null}
+      </aside>
     </div>
   );
 }
