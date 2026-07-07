@@ -22,11 +22,11 @@ export function MailingListForm() {
   }
 
   if (status === "done") {
-    return <p className="mt-12 text-green-300">You’re on the list. See you up front. 🤘</p>;
+    return <p className="mt-8 text-green-300">You’re on the list. See you up front. 🤘</p>;
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto mt-12 flex max-w-md gap-2">
+    <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-2 sm:flex-row">
       <label className="sr-only" htmlFor="mailing-list-email">
         Email address
       </label>
@@ -36,12 +36,12 @@ export function MailingListForm() {
         type="email"
         required
         placeholder="you@example.com"
-        className="w-full rounded border border-zinc-700 bg-zinc-900 px-3 py-2 focus:border-zinc-500 focus:outline-none"
+        className="input-field"
       />
       <button
         type="submit"
         disabled={status === "sending"}
-        className="whitespace-nowrap rounded bg-white px-4 py-2 font-bold text-black hover:bg-zinc-200 disabled:opacity-50"
+        className="btn-primary whitespace-nowrap"
       >
         Get show alerts
       </button>
