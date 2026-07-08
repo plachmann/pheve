@@ -21,6 +21,37 @@ Other Docker commands:
 - `pnpm docker:down` — stop the container, keep its data
 - `pnpm docker:reset` — stop the container and wipe its data
 
+## Production setup (Vercel)
+
+The code is deploy-ready; everything below is account/dashboard/env configuration
+that has no local equivalent.
+
+1. **Environment variables.** Set the same keys as `.env.example` in the Vercel
+   project (Production scope), using live values: `STRIPE_SECRET_KEY=sk_live_…`,
+   `DATABASE_URL`, `RESEND_API_KEY`, `RESEND_AUDIENCE_ID`, `BAND_EMAIL`,
+   `EMAIL_FROM`, and `STRIPE_WEBHOOK_SECRET` (from step 2).
+
+2. **Register a webhook endpoint.** The local `stripe listen` bridge does not exist
+   in production. In the Stripe Dashboard → Developers → Webhooks, add an endpoint at
+   `https://<your-domain>/api/webhooks/stripe` and subscribe to
+   `checkout.session.completed` — the only event `src/app/api/webhooks/stripe/route.ts`
+   handles. Copy its signing secret (`whsec_…`) into `STRIPE_WEBHOOK_SECRET`.
+   Without this, paid orders are **never recorded and stock never decrements**; the
+   webhook is the only writer of orders and inventory.
+
+3. **Enable Stripe Tax in live mode.** Separate from the test-mode setup above. The
+   checkout session sets `automatic_tax: { enabled: true }` (`src/lib/checkout.ts`), so
+   without an origin address and a US registration in live mode, session creation
+   returns a 400 on real checkouts.
+
+4. **Enable receipt emails.** The success page tells buyers "Stripe is emailing your
+   receipt." Stripe only sends these when Settings → Emails → "Successful payments" is
+   on (off by default, and test mode never delivers them).
+
+5. **Activate the account for live payments.** Complete business details and a payout
+   bank account, and confirm the enabled payment methods. Checkout branding
+   (logo/colors) is optional.
+
 ## End-to-end tests
 
 `pnpm e2e` runs locally only — it needs a real test-mode Stripe account and drives
