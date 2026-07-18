@@ -49,7 +49,7 @@ export default async function StorePage() {
               >
                 <div className="relative h-40 w-full">
                   <Image
-                    src={product.images[0] ?? "/images/pheve-logo.png"}
+                    src={product.images[0] ?? "/images/pheagle.png"}
                     alt={product.name}
                     fill
                     className="object-contain"

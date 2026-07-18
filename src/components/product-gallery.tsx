@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export function ProductGallery({ images, name }: { images: string[]; name: string }) {
   const [selected, setSelected] = useState(0);
-  const mainImage = images[selected] ?? images[0] ?? "/images/pheve-logo.png";
+  const mainImage = images[selected] ?? images[0] ?? "/images/pheagle.png";
 
   return (
     <div>

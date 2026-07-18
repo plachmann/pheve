@@ -64,6 +64,16 @@
     );
   }
 
+  /* Lit red stage panel so the black logo mark reads as a silhouette */
+  .logo-stage {
+    background: radial-gradient(
+      ellipse 82% 96% at 50% 45%,
+      var(--color-pheve-red) 0%,
+      var(--color-pheve-red-dark) 58%,
+      #7a0b11 100%
+    );
+  }
+
   /* Angled photo panel: slanted left edge on desktop, shallow bottom cut on mobile */
   .clip-angled {
     clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);

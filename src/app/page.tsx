@@ -17,9 +17,9 @@ export default function HomePage() {
     <main>
       <section className="stripe-texture bg-black">
         <div className="shell grid items-center gap-10 py-16 md:grid-cols-2 md:py-28">
-          <div className="clip-angled relative h-64 bg-[#111] md:order-2 md:h-96">
+          <div className="clip-angled logo-stage relative h-64 md:order-2 md:h-96">
             <Image
-              src="/images/pheve-logo.png"
+              src="/images/pheagle.png"
               alt="PHEVE"
               fill
               priority
