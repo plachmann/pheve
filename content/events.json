@@ -1,9 +1,14 @@
 [
-  { "date": "2026-07-18", "venue": "The Madison Live", "city": "Covington, KY", "time": "8:00 PM" },
   {
-    "date": "2026-08-01",
-    "venue": "Fretboard Brewing",
-    "city": "Cincinnati, OH",
-    "time": "7:30 PM"
+    "date": "2026-07-18",
+    "venue": "Kenton County Fair",
+    "city": "Independence, KY",
+    "time": "8:00 PM"
+  },
+  {
+    "date": "2026-10-03",
+    "venue": "Anytime Fitness Anniversary",
+    "city": "Independence, KY",
+    "time": "TBD"
   }
 ]

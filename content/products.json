@@ -5,7 +5,7 @@
     "priceCents": 2500,
     "description": "Black tee, big logo. The uniform.",
     "variants": ["S", "M", "L", "XL", "2XL"],
-    "images": ["/images/pheve-logo.png"]
+    "images": ["/images/pheagle.png"]
   },
   {
     "slug": "trucker-hat",
@@ -13,7 +13,7 @@
     "priceCents": 2000,
     "description": "Mesh-back trucker hat with the PHEVE logo.",
     "variants": ["One size"],
-    "images": ["/images/pheve-logo.png"]
+    "images": ["/images/pheagle.png"]
   },
   {
     "slug": "sticker-pack",
@@ -21,6 +21,6 @@
     "priceCents": 500,
     "description": "Five die-cut stickers. Laptop not included.",
     "variants": ["One size"],
-    "images": ["/images/pheve-logo.png"]
+    "images": ["/images/pheagle.png"]
   }
 ]
