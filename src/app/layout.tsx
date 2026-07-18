@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Anton } from "next/font/google";
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { CartLink } from "@/components/cart-link";
@@ -37,8 +38,15 @@ function Nav() {
   return (
     <header className="relative border-b-2 border-pheve-red bg-black">
       <nav className="shell flex items-center justify-between py-4">
-        <Link href="/" className="font-display text-2xl uppercase tracking-widest">
-          PHEVE
+        <Link href="/" aria-label="PHEVE home" className="flex items-center">
+          <Image
+            src="/images/pheagle-light.png"
+            alt="PHEVE"
+            width={2057}
+            height={974}
+            priority
+            className="h-10 w-auto"
+          />
         </Link>
         <div className={`hidden items-center gap-6 ${NAV_LINK_ROW_CLASS} text-zinc-300 md:flex`}>
           {NAV_LINKS.map((link) => (
