@@ -13,8 +13,9 @@ test.describe("product detail", () => {
   test("size swatches select a variant and add to cart", async ({ page }) => {
     await page.goto("/store/logo-tee");
     test.skip(
-      await page.getByText(/store is napping/i).isVisible(),
-      "Requires local Postgres with seeded stock — run pnpm db:setup",
+      (await page.getByText(/coming soon/i).isVisible()) ||
+        (await page.getByText(/store is napping/i).isVisible()),
+      "Store closed (coming soon) or unstocked — open the store / run pnpm db:setup",
     );
     // Playwright's getByRole name matching is substring-based by default, so "L" alone
     // would also match "XL" and "2XL" — exact: true pins it to the single "L" swatch.
@@ -30,5 +31,15 @@ test.describe("product detail", () => {
     await page.getByRole("button", { name: /add to cart/i }).click();
     // CartLink renders in both the desktop and mobile nav groups; only one is visible.
     await expect(page.getByRole("link", { name: /cart \(1\)/i }).first()).toBeVisible();
+  });
+
+  test("hides add to cart and shows coming soon while pre-launch", async ({ page }) => {
+    await page.goto("/store/logo-tee");
+    test.skip(
+      !(await page.getByText(/coming soon/i).isVisible()),
+      "Store is open — purchasing enabled",
+    );
+    await expect(page.getByRole("button", { name: /add to cart/i })).toHaveCount(0);
+    await expect(page.getByRole("radio", { name: "L", exact: true })).toHaveCount(0);
   });
 });

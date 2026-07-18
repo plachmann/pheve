@@ -19,6 +19,13 @@ test.describe("merch purchase", () => {
 
   test("browse → cart → Stripe Checkout session", async ({ page }) => {
     await page.goto("/store");
+    test.skip(
+      await page
+        .getByText(/coming soon/i)
+        .first()
+        .isVisible(),
+      "Store is in coming-soon mode — purchasing disabled",
+    );
     await page.getByRole("link", { name: /PHEVE Logo Tee/i }).click();
     // getByRole name matching is substring-based, so "L" would also match "XL"/"2XL";
     // exact pins it to the single "L" swatch.

@@ -1,11 +1,13 @@
 import { notFound } from "next/navigation";
 import { AddToCart } from "@/components/add-to-cart";
+import { ComingSoonBanner } from "@/components/coming-soon-banner";
 import { ProductGallery } from "@/components/product-gallery";
 import { SoldOutStamp } from "@/components/sold-out-stamp";
 import { getProduct } from "@/lib/content";
 import { getDb } from "@/lib/db/client";
 import { getStockMap } from "@/lib/inventory";
 import { formatCents } from "@/lib/money";
+import { STORE_COMING_SOON } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +23,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     console.error(`stock unavailable for ${slug}`, err);
   }
 
-  const allSoldOut = stock !== null && product.variants.every((v) => (stock[v] ?? 0) === 0);
+  const allSoldOut =
+    !STORE_COMING_SOON && stock !== null && product.variants.every((v) => (stock[v] ?? 0) === 0);
 
   return (
     <main className="shell py-12 md:py-16">
@@ -35,7 +38,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <p className="mt-3 text-2xl text-zinc-300">{formatCents(product.priceCents)}</p>
           {allSoldOut ? <SoldOutStamp className="mt-4 inline-block" /> : null}
           <p className="mt-4 max-w-xl text-zinc-400">{product.description}</p>
-          {stock === null ? (
+          {STORE_COMING_SOON ? (
+            <ComingSoonBanner className="mt-6" />
+          ) : stock === null ? (
             <p className="mt-6 border border-yellow-900 bg-yellow-950/40 p-4 text-yellow-200">
               The store is napping — you can’t buy right now. Check back soon.
             </p>
