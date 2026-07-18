@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { ComingSoonBanner } from "@/components/coming-soon-banner";
 import { PageHeading } from "@/components/page-heading";
 import { SoldOutStamp } from "@/components/sold-out-stamp";
 import { loadProducts } from "@/lib/content";
 import { getDb } from "@/lib/db/client";
 import { getAllStock } from "@/lib/inventory";
 import { formatCents } from "@/lib/money";
+import { STORE_COMING_SOON } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +27,9 @@ export default async function StorePage() {
   return (
     <main className="shell py-12 md:py-16">
       <PageHeading eyebrow="The merch table" title="Merch" />
-      {stock === null ? (
+      {STORE_COMING_SOON ? (
+        <ComingSoonBanner className="mt-6" />
+      ) : stock === null ? (
         <p className="mt-6 border border-yellow-900 bg-yellow-950/40 p-4 text-yellow-200">
           The store is napping — browsing only for now. Check back soon.
         </p>
@@ -37,7 +41,10 @@ export default async function StorePage() {
       >
         {products.map((product) => {
           const variants = stock?.[product.slug] ?? {};
-          const soldOut = stock !== null && product.variants.every((v) => (variants[v] ?? 0) === 0);
+          const soldOut =
+            !STORE_COMING_SOON &&
+            stock !== null &&
+            product.variants.every((v) => (variants[v] ?? 0) === 0);
           return (
             <li key={product.slug}>
               <Link
