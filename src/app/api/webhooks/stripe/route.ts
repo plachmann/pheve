@@ -1,6 +1,6 @@
 import type Stripe from "stripe";
 import { getDb } from "@/lib/db/client";
-import { sendOrderEmail } from "@/lib/email";
+import { sendOrderEmail, sendReceiptEmail } from "@/lib/email";
 import { getStripe } from "@/lib/stripe";
 import { processCheckoutCompleted, UnprocessableWebhookError } from "@/lib/webhook";
 
@@ -32,13 +32,23 @@ export async function POST(request: Request): Promise<Response> {
         session.metadata?.["cart"],
       );
       if (status === "recorded") {
+        const buyerEmail = session.customer_details?.email ?? null;
         try {
-          await sendOrderEmail(session.id, items, session.customer_details?.email ?? null);
+          await sendOrderEmail(session.id, items, buyerEmail);
         } catch (emailErr) {
           // The order is recorded and visible in the Stripe dashboard. Returning 5xx here
           // would make Stripe retry and hit the duplicate path without resending the email,
           // so log loudly instead of failing the webhook.
           console.error(`order notification email failed for ${session.id}`, emailErr);
+        }
+        if (buyerEmail) {
+          try {
+            await sendReceiptEmail(buyerEmail, items, session.amount_total, session.currency);
+          } catch (receiptErr) {
+            console.error(`buyer receipt email failed for ${session.id}`, receiptErr);
+          }
+        } else {
+          console.error(`no customer email on ${session.id}; skipping buyer receipt`);
         }
       }
     } catch (err) {
