@@ -57,6 +57,47 @@ export async function sendOrderEmail(
   if (error) throw new Error(`Order email failed: ${error.message}`);
 }
 
+function formatAmount(amountCents: number, currency: string): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency.toUpperCase(),
+  }).format(amountCents / 100);
+}
+
+export async function sendReceiptEmail(
+  customerEmail: string,
+  items: CartItem[],
+  amountTotalCents: number | null,
+  currency: string | null,
+): Promise<void> {
+  const lines = items.map((item) => {
+    const name = getProduct(item.slug)?.name ?? item.slug;
+    return `${item.quantity} × ${name} (${item.variant})`;
+  });
+  const total =
+    amountTotalCents !== null && currency
+      ? `Total charged: ${formatAmount(amountTotalCents, currency)}`
+      : "Total charged: see your card statement";
+  const { error } = await getResend().emails.send({
+    from: requireEnv("EMAIL_FROM"),
+    to: customerEmail,
+    replyTo: requireEnv("BAND_EMAIL"),
+    subject: "Your PHEVE order confirmation",
+    text: [
+      "Thanks for your order! Here's what you bought:",
+      "",
+      ...lines,
+      "",
+      total,
+      "",
+      "We'll email you again when it ships. Just reply here if you have any questions.",
+      "",
+      "— PHEVE",
+    ].join("\n"),
+  });
+  if (error) throw new Error(`Receipt email failed: ${error.message}`);
+}
+
 export async function addSubscriber(email: string): Promise<void> {
   const { error } = await getResend().contacts.create({
     email,

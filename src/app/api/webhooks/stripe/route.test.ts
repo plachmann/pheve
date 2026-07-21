@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { CartItem } from "@/lib/cart";
-import { sendOrderEmail } from "@/lib/email";
+import { sendOrderEmail, sendReceiptEmail } from "@/lib/email";
 import { processCheckoutCompleted, UnprocessableWebhookError } from "@/lib/webhook";
 import { POST } from "@/app/api/webhooks/stripe/route";
 
@@ -16,15 +16,19 @@ vi.mock("@/lib/webhook", async () => {
 
 vi.mock("@/lib/email", () => ({
   sendOrderEmail: vi.fn(),
+  sendReceiptEmail: vi.fn(),
 }));
 
 const SECRET = "whsec_test_secret";
 const SESSION_ID = "cs_test_123";
 const BUYER_EMAIL = "buyer@example.com";
+const AMOUNT_TOTAL = 5000;
+const CURRENCY = "usd";
 const items: CartItem[] = [{ slug: "logo-tee", variant: "L", quantity: 2 }];
 
 const processMock = vi.mocked(processCheckoutCompleted);
 const emailMock = vi.mocked(sendOrderEmail);
+const receiptMock = vi.mocked(sendReceiptEmail);
 
 function signedRequest(payload: string, secret: string): Request {
   const stripe = new Stripe("sk_test_dummy");
@@ -36,7 +40,7 @@ function signedRequest(payload: string, secret: string): Request {
   });
 }
 
-function checkoutPayload(): string {
+function checkoutPayload(customerEmail: string | null = BUYER_EMAIL): string {
   return JSON.stringify({
     id: "evt_1",
     object: "event",
@@ -46,7 +50,9 @@ function checkoutPayload(): string {
         id: SESSION_ID,
         object: "checkout.session",
         metadata: { cart: '[{"s":"logo-tee","v":"L","q":2}]' },
-        customer_details: { email: BUYER_EMAIL },
+        customer_details: customerEmail ? { email: customerEmail } : {},
+        amount_total: AMOUNT_TOTAL,
+        currency: CURRENCY,
       },
     },
   });
@@ -90,34 +96,62 @@ describe("POST /api/webhooks/stripe", () => {
     expect(processMock).not.toHaveBeenCalled();
   });
 
-  it("records the order and emails the band on a completed checkout", async () => {
+  it("records the order, emails the band, and sends the buyer a receipt", async () => {
     processMock.mockResolvedValue({ status: "recorded", items });
     emailMock.mockResolvedValue();
+    receiptMock.mockResolvedValue();
 
     const res = await POST(signedRequest(checkoutPayload(), SECRET));
 
     expect(res.status).toBe(200);
     expect(emailMock).toHaveBeenCalledTimes(1);
     expect(emailMock).toHaveBeenCalledWith(SESSION_ID, items, BUYER_EMAIL);
+    expect(receiptMock).toHaveBeenCalledTimes(1);
+    expect(receiptMock).toHaveBeenCalledWith(BUYER_EMAIL, items, AMOUNT_TOTAL, CURRENCY);
   });
 
-  it("does not email the band on a duplicate (already-recorded) checkout", async () => {
+  it("does not email anyone on a duplicate (already-recorded) checkout", async () => {
     processMock.mockResolvedValue({ status: "duplicate", items });
 
     const res = await POST(signedRequest(checkoutPayload(), SECRET));
 
     expect(res.status).toBe(200);
     expect(emailMock).not.toHaveBeenCalled();
+    expect(receiptMock).not.toHaveBeenCalled();
+  });
+
+  it("skips the buyer receipt when the session has no customer email", async () => {
+    processMock.mockResolvedValue({ status: "recorded", items });
+    emailMock.mockResolvedValue();
+
+    const res = await POST(signedRequest(checkoutPayload(null), SECRET));
+
+    expect(res.status).toBe(200);
+    expect(emailMock).toHaveBeenCalledWith(SESSION_ID, items, null);
+    expect(receiptMock).not.toHaveBeenCalled();
   });
 
   it("still returns 200 when the order email fails to send", async () => {
     processMock.mockResolvedValue({ status: "recorded", items });
     emailMock.mockRejectedValue(new Error("resend down"));
+    receiptMock.mockResolvedValue();
 
     const res = await POST(signedRequest(checkoutPayload(), SECRET));
 
     expect(res.status).toBe(200);
     expect(emailMock).toHaveBeenCalledTimes(1);
+    expect(receiptMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("still returns 200 when the buyer receipt fails to send", async () => {
+    processMock.mockResolvedValue({ status: "recorded", items });
+    emailMock.mockResolvedValue();
+    receiptMock.mockRejectedValue(new Error("resend down"));
+
+    const res = await POST(signedRequest(checkoutPayload(), SECRET));
+
+    expect(res.status).toBe(200);
+    expect(receiptMock).toHaveBeenCalledTimes(1);
   });
 
   it("returns 200 for an unprocessable event so Stripe stops retrying", async () => {
@@ -127,6 +161,7 @@ describe("POST /api/webhooks/stripe", () => {
 
     expect(res.status).toBe(200);
     expect(emailMock).not.toHaveBeenCalled();
+    expect(receiptMock).not.toHaveBeenCalled();
   });
 
   it("returns 500 on a transient processing failure so Stripe retries", async () => {
@@ -136,5 +171,6 @@ describe("POST /api/webhooks/stripe", () => {
 
     expect(res.status).toBe(500);
     expect(emailMock).not.toHaveBeenCalled();
+    expect(receiptMock).not.toHaveBeenCalled();
   });
 });
