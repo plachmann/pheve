@@ -6,6 +6,12 @@ import { addItem, cartItemSchema, removeItem, setQuantity, type CartItem } from 
 
 type CartContextValue = {
   items: CartItem[];
+  /**
+   * False until the stored cart has been read from localStorage. Consumers that
+   * mutate the cart from an effect on mount must wait for this, because the
+   * hydration effect below runs after child effects and would overwrite them.
+   */
+  loaded: boolean;
   add: (item: CartItem) => void;
   remove: (slug: string, variant: string) => void;
   setQty: (slug: string, variant: string, quantity: number) => void;
@@ -41,6 +47,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const value: CartContextValue = {
     items,
+    loaded,
     add: (item) => setItems((cart) => addItem(cart, item)),
     remove: (slug, variant) => setItems((cart) => removeItem(cart, slug, variant)),
     setQty: (slug, variant, quantity) =>
