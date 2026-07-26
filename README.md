@@ -39,10 +39,27 @@ that has no local equivalent.
    Without this, paid orders are **never recorded and stock never decrements**; the
    webhook is the only writer of orders and inventory.
 
+   Use the host that serves the site directly. `pheve.com` returns a 308 to
+   `www.pheve.com`, and Stripe does not follow redirects when delivering webhooks, so
+   an apex endpoint fails on every event with nothing in the app's logs to show it.
+
 3. **Enable Stripe Tax in live mode.** Separate from the test-mode setup above. The
    checkout session sets `automatic_tax: { enabled: true }` (`src/lib/checkout.ts`), so
-   without an origin address and a US registration in live mode, session creation
-   returns a 400 on real checkouts.
+   session creation returns a 400 on real checkouts until the tax settings carry an
+   origin address.
+
+   Registrations fail differently, and quietly. With settings active but no
+   registration active for the buyer's jurisdiction, session creation **succeeds** and
+   Stripe calculates $0 tax — no error anywhere, and the e2e suite asserts a $0 tax
+   line, so neither surfaces it. Check registrations separately:
+
+   ```
+   stripe tax settings retrieve --live
+   stripe tax registrations list --live
+   ```
+
+   A registration whose `active_from` is in the future reports `status: scheduled` and
+   collects nothing until that date.
 
 4. **Enable receipt emails.** The success page tells buyers "Stripe is emailing your
    receipt." Stripe only sends these when Settings → Emails → "Successful payments" is
@@ -52,10 +69,50 @@ that has no local equivalent.
    bank account, and confirm the enabled payment methods. Checkout branding
    (logo/colors) is optional.
 
+## Preview deployments
+
+Preview deployments can exercise checkout up to Stripe's hosted page, but not the
+webhook. Add a **test-mode** `STRIPE_SECRET_KEY` (`sk_test_…`) to the Vercel Preview
+scope and previews will validate products and variants, check stock, calculate tax and
+shipping, create a session, and redirect to Stripe.
+
+They cannot receive webhooks. Preview deployments sit behind Vercel's deployment
+protection, so an unauthenticated `POST` to `/api/webhooks/stripe` gets a 302 to
+`vercel.com/sso-api` rather than reaching the handler. A browser carries the SSO
+cookie, which is why the checkout redirect itself still works. Consequence: no order is
+recorded, no stock decrements, and no emails send on a preview purchase.
+
+The webhook half is covered by `pnpm e2e` instead, which forwards real signed events
+through `stripe listen` — see below. Don't point a Stripe webhook at a preview URL;
+the endpoint also changes per branch.
+
+## Restocking production
+
+`pnpm restock <slug> <variant> <qty>` sets an absolute stock count. It targets the
+local Docker database while `.env.development.local` exists, so reaching production
+means moving that file aside:
+
+```
+mv .env.development.local .env.development.local.off
+pnpm restock sticker-pack "One size" 50
+mv .env.development.local.off .env.development.local
+```
+
+Refunds do not restock. The webhook only handles `checkout.session.completed`, so a
+refunded order leaves inventory decremented and needs a manual restock.
+
 ## End-to-end tests
 
 `pnpm e2e` runs locally only — it needs a real test-mode Stripe account and drives
 the live Stripe Checkout page. CI runs unit tests and the build instead.
+
+`playwright.config.ts` sets `reuseExistingServer`, so if another project is already
+serving the target port the suite tests **that** app and assertions pass or fail for
+unrelated reasons. Override the port when 3000 is occupied:
+
+```
+E2E_PORT=3100 pnpm e2e
+```
 
 `e2e/purchase.spec.ts` has two halves:
 
