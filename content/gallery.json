@@ -1,4 +1,61 @@
 {
-  "photos": [{ "src": "/images/pheagle.png", "alt": "PHEVE logo" }],
+  "photos": [
+    {
+      "src": "/images/kenton-county-fair-01.jpg",
+      "alt": "PHEVE performing as a five-piece on the outdoor stage at the Kenton County Fair"
+    },
+    {
+      "src": "/images/rock-on-the-james-01.jpg",
+      "alt": "PHEVE on stage under blue light at Rock on the James, stained glass windows behind the band"
+    },
+    {
+      "src": "/images/rock-on-the-james-fans.jpg",
+      "alt": "Four fans wearing PHEVE t-shirts at the Rock on the James show"
+    },
+    {
+      "src": "/images/kenton-county-fair-02.jpg",
+      "alt": "The full band mid-song on the Kenton County Fair stage"
+    },
+    {
+      "src": "/images/rock-on-the-james-02.jpg",
+      "alt": "Wide view of PHEVE playing the Rock on the James benefit concert"
+    },
+    {
+      "src": "/images/kenton-county-fair-03.jpg",
+      "alt": "Singer and guitarists at the front of the Kenton County Fair stage, drummer behind them"
+    },
+    {
+      "src": "/images/rock-on-the-james-03.jpg",
+      "alt": "Guitarist singing into the mic under purple stage light at Rock on the James"
+    },
+    {
+      "src": "/images/kenton-county-fair-04.jpg",
+      "alt": "Singer at the mic with the drummer and a guitarist at the Kenton County Fair"
+    },
+    {
+      "src": "/images/kenton-county-fair-05.jpg",
+      "alt": "Singer and guitarist in front of the festival backdrop at the Kenton County Fair"
+    },
+    {
+      "src": "/images/kenton-county-fair-06.jpg",
+      "alt": "Singer, drummer, and guitarist mid-set on the outdoor stage"
+    },
+    {
+      "src": "/images/kenton-county-fair-07.jpg",
+      "alt": "Guitarist, bassist, and singer playing the Kenton County Fair stage"
+    },
+    {
+      "src": "/images/kenton-county-fair-08.jpg",
+      "alt": "Bassist and singer at the mic stand during the Kenton County Fair set"
+    },
+    {
+      "src": "/images/kenton-county-fair-09.jpg",
+      "alt": "Guitarist and bassist playing in afternoon light at the Kenton County Fair"
+    },
+    {
+      "src": "/images/kenton-county-fair-10.jpg",
+      "alt": "Guitarist and bassist between songs on the Kenton County Fair stage"
+    }
+  ],
   "videos": []
 }
