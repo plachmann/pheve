@@ -5,13 +5,16 @@ import { useEffect } from "react";
 import { useCart } from "@/components/cart-provider";
 
 export default function SuccessPage() {
-  const { clear } = useCart();
+  const { clear, loaded } = useCart();
 
   useEffect(() => {
-    clear();
-    // clear() is stable for the life of the page; run once on mount.
+    // Wait for the provider to hydrate. Child effects run before parent effects,
+    // so clearing on mount would fire against the initial empty cart and then be
+    // overwritten when the provider reads localStorage.
+    if (loaded) clear();
+    // clear() is stable for the life of the page; re-run only when loaded flips.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loaded]);
 
   return (
     <main className="shell py-24 text-center">
