@@ -1,0 +1,36 @@
+name: Neon branch cleanup
+
+# The Neon integration creates a database branch for every preview deployment and
+# never removes them. The Free plan caps a project at 10 branches, and once that is
+# hit every preview deploy fails during integration provisioning — before the build
+# runs, so there are no logs and the failure looks unrelated to the PR.
+on:
+  pull_request:
+    types: [closed]
+
+# No GitHub API access is needed; the job only talks to Neon.
+permissions: {}
+
+jobs:
+  delete-preview-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 22
+
+      - name: Delete the Neon preview branch for this PR
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          NEON_PROJECT_ID: polished-tooth-62874803
+          # Passed through env rather than interpolated into the script, so a branch
+          # name cannot inject shell commands.
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+          branch="preview/${HEAD_REF}"
+          echo "Deleting Neon branch: ${branch}"
+          npx --yes neonctl@2.36.2 branches delete "${branch}" \
+            --project-id "${NEON_PROJECT_ID}" \
+            --api-key "${NEON_API_KEY}" \
+            || echo "No branch named ${branch} — the PR likely never got a preview deployment."
