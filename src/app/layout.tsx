@@ -80,6 +80,9 @@ function Footer() {
             </a>
           ))}
         </div>
+        <Link href="/policies" className="font-bold uppercase tracking-wider hover:text-pheve-red">
+          Store Policies
+        </Link>
         <p>© {new Date().getFullYear()} PHEVE</p>
       </div>
     </footer>
